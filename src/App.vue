@@ -1,80 +1,61 @@
 <script setup>
-import { onMounted, ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, provide, computed } from 'vue'
 import axios from 'axios'
 
 import Header from './componenst/Header.vue'
-import CardList from './componenst/CardList.vue'
 import Drawer from './componenst/Drawer.vue'
+import Catalog from './pages/Catalog.vue'
 
-const items = ref([])
+const cart = ref([])
+const drawerIsOpen = ref(false)
 
-//Если хранят объекты то используют reactive, иначе просто ref
-const filters = reactive({
-  sortBy: 'title',
-  searchQuery: ''
-})
+const totalPrice = computed(
+  () => cart.value.reduce((acc, item) => acc + item.price , 0)
+)
 
-const onChangeSelect = (event) => {
-  filters.sortBy = event.target.value
+const closeDrawer = () => {
+  drawerIsOpen.value = false
 }
 
-const onChangeSearchInput = (event) => {
-  filters.searchQuery = event.target.value
+const oprenDrawer = () => {
+  drawerIsOpen.value = true
 }
 
-const fetchItems = async () => {
-  try {
-    const params = {
-      sortBy: filters.sortBy
-    }
+const addToCart = (item) => {
+  cart.value.push(item)
+  item.isAdded = true
+}
 
-    if (filters.searchQuery) {
-      params.title = `*${filters.searchQuery}*`
-    }
+const removeFromCart = (item) => {
+  cart.value.splice(cart.value.indexOf(item), 1)
+  item.isAdded = false
+}
 
-    const { data } = await axios.get('https://604781a0efa572c1.mokky.dev/items', {
-      params
-    })
-    items.value = data
-  } catch (err) {
-    console.log(err)
+const onClickAddPlus = (item) => {
+  if (!item.isAdded) {
+    addToCart(item)
+  } else {
+    removeFromCart(item)
   }
 }
 
-onMounted(fetchItems)
-watch(filters, fetchItems)
+provide('cart', {
+  cart,
+  closeDrawer,
+  oprenDrawer,
+  addToCart,
+  removeFromCart,
+  onClickAddPlus
+})
 </script>
 
 <template>
-  <!-- <Drawer /> -->
-  <div class="bg-orange-100 h-screen">
-    <Header />
+  <Drawer :total-price="totalPrice" v-if="drawerIsOpen" />
+  <!-- min-h-screen Чтобы на всех страницах был залит фон -->
+  <div class="bg-orange-100 min-h-screen">
+    <Header :total-price="totalPrice" @open-drawer="oprenDrawer" />
     <div class="p-10">
-      <div class="flex justify-between items-center">
-        <h2 class="text-3xl font-bold mb-8">Все товары</h2>
-        <div class="flex gap-4">
-          <select @change="onChangeSelect" class="py-2 px-3 border rounded-md outline-none">
-            <option value="name">По названию</option>
-            <option value="-price">По цене (дорогие)</option>
-            <option value="price">По цене (дешевые)</option>
-          </select>
-
-          <div class="relative">
-            <img class="absolute left-4 top-3" src="/search.svg" />
-            <input
-              @input="onChangeSearchInput"
-              class="border rounded-md py-2 pl-11 pr-4 outline-none focus:border-gray-400"
-              type="text"
-              placeholder="Поиск..."
-            />
-          </div>
-        </div>
-      </div>
-      <!-- <div class="mt-10">
-        <CardList :items="items" />
-      </div> -->
+      <router-view></router-view>
     </div>
   </div>
 </template>
-
-<style scoped></style>

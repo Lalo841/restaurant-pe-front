@@ -1,32 +1,54 @@
 <script setup>
 import { ref } from 'vue'
 
+defineProps({
+  totalPrice: Number
+})
+const emit = defineEmits(['openDrawer'])
+
+
+// //инпут в heade не работает , надо сделать глобальным его состояние
+// let headerSearchValue;
+// const onChangeSearchInput = (event) =>{
+//   headerSearchValue = event.target.value
+// }
+
+//переменная выпадющего меню для бронирования
 let isOpen = ref(false)
+
 </script>
 
 <template>
   <header class="flex justify-between px-4 py-1 bg-red-600">
-    <div class="flex items-center gap-4">
-      <img class="w-28" src="../../public/logo2.png" alt="Logo" />
-      <!-- Инпут можно вынести в компонент в дальнейшем -->
-      <div class="relative">
-        <img class="absolute left-4 top-3" src="/search.svg" />
-        <input
-          @input="onChangeSearchInput"
-          class="border rounded-full py-2 pl-11 pr-4 outline-none focus:border-gray-400"
-          type="text"
-          placeholder="Поиск..."
-        />
+    <router-link to="/">
+      <div class="flex items-center gap-4">
+        <img class="w-28" src="../../public/logo2.png" alt="Logo" />
+        <!-- Инпут можно вынести в компонент в дальнейшем -->
+        <div class="relative">
+          <img class="absolute left-4 top-3" src="/search.svg" />
+          <input
+            @input="onChangeSearchInput"
+            class="border rounded-full py-2 pl-11 pr-4 outline-none focus:border-gray-400"
+            type="text"
+            placeholder="Поиск..."
+          />
+        </div>
       </div>
-    </div>
+    </router-link>
 
     <ul class="flex items-center gap-10">
-      <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
-        <span>Каталог</span>
-      </li>
-      <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
-        <span>О нас</span>
-      </li>
+      <router-link to="/">
+        <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
+          <span>Каталог</span>
+        </li>
+      </router-link>
+
+      <router-link to="/about">
+        <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
+          <span>О нас</span>
+        </li>
+      </router-link>
+
       <!-- Меню с ресторанами -->
       <li class="flex items-center gap-3 text-lg text-slate-300">
         <div class="relative flex items-center gap-2">
@@ -86,9 +108,9 @@ let isOpen = ref(false)
       >
         <span>Информация о разработчиках</span>
       </li>
-      <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
+      <li @click="() => emit('openDrawer')" class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
         <img src="/cart.svg" alt="Cart" />
-        <b>1250 руб.</b>
+        <b>{{ totalPrice }} руб.</b>
       </li>
       <li
         class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white mr-6"
