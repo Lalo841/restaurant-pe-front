@@ -2,9 +2,9 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useCartStore = defineStore('cart', {
-  state:() => {
+  state: () => {
     return {
-      cart: [],
+      cart: []
     }
   },
   getters: {
@@ -12,18 +12,16 @@ export const useCartStore = defineStore('cart', {
   },
 
   actions: {
-   addToCart(item) {
+    addToCart(item) {
       this.cart.push(item)
       item.isAdded = true
-     
-     
+      localStorage.setItem(item.id, item)
     },
-    
+
     removeFromCart(item) {
       this.cart.splice(this.cart.indexOf(item), 1)
       item.isAdded = false
-    
+      localStorage.removeItem(item.id)
     }
   }
-
 })

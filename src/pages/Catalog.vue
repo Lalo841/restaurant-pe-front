@@ -30,24 +30,7 @@ const onChangeSearchInput = (event) => {
   filters.searchQuery = event.target.value
 }
 
-// const fetchItems = async () => {
-//   try {
-//     const params = {
-//       sortBy: filters.sortBy
-//     }
 
-//     if (filters.searchQuery) {
-//       params.title = `*${filters.searchQuery}*`
-//     }
-
-//     const { data } = await axios.get('https://604781a0efa572c1.mokky.dev/items', {
-//       params
-//     })
-//     items.value = data
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
 const fetchItems = async () => {
   try {
     const params = {
@@ -61,38 +44,26 @@ const fetchItems = async () => {
     const { data } = await axios.get('https://604781a0efa572c1.mokky.dev/items', {
       params
     })
+    console.log(typeof(data))
     items.value = data
+  
   } catch (err) {
     console.log(err)
   }
 }
 
-const fetchItems2 = () => {
-  var myHeaders = new Headers()
-  myHeaders.append(
-    'Authorization',
-    'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
-  )
+//http://82.179.49.231:3000/dish/ 
+//https://604781a0efa572c1.mokky.dev/items
 
-  var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
-  }
 
-  fetch('82.179.49.231:3000/dish/', requestOptions)
-    .then((response) => response.json())
-    .then((result) => console.log(result))
-    .catch((error) => console.log('error', error))
-}
 
 const onClickAddPlus = (item) => {
   if (!item.isAdded) {
     cartStore.addToCart(item)
-    fetchItems2()
+  
   } else {
     cartStore.removeFromCart(item)
-    fetchItems2()
+ 
   }
 }
 

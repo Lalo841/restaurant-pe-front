@@ -6,6 +6,17 @@ defineProps({
 })
 
 const emit = defineEmits(['addToCart'])
+
+// const b = {
+//   id: 1,
+//   name: 'Кофе',
+//   weight: 200,
+//   category: 0,
+//   desc: 'Ароматный напиток для бодрящего утра',
+//   calories: 5,
+//   price: 80,
+//   image: '7892195c-8ea9-448a-8d53-875be1498d0a-coffe.png'
+// }
 </script>
 
 <template>
@@ -14,11 +25,10 @@ const emit = defineEmits(['addToCart'])
       v-for="item in items"
       :key="item.id"
       :id="item.id"
-      :title="item.title"
-      :image-url="item.imageUrl"
+      :name="item.name"
+      :image-url="item.image"
       :price="item.price"
       :is-added="false"
-      :is-favorite="false"
       :onClickAdd="() => emit('addToCart', item)"
       :isAdded="item.isAdded"
     />
