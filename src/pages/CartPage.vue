@@ -1,23 +1,20 @@
 <script setup>
-defineProps({
-  totalPrice: Number
-})
-import DrawerHead from './DrawerHead.vue'
-import CartItemList from './CartItemList.vue'
+import { useCartStore } from '@/_helpers/cart.store'
+
+import CartItemList from '../componenst/CartItemList.vue'
+
+const cartStore = useCartStore()
 </script>
 
 <template>
-  <div class="fixed top-0 left-0 h-full w-full bg-black z-10 opacity-30"></div>
-  <div class="bg-orange-200 w-96 h-full fixed right-0 top-0 z-20 p-8">
-    <DrawerHead />
-
+  <div class="bg-orange-100 p-10">
     <CartItemList />
 
     <div class="flex flex-col gap-4 my-6">
       <div class="flex gap-4">
         <span>Итого:</span>
         <div class="flex-1 border-b border-red-600 border-dashed"></div>
-        <b>{{ totalPrice }} руб.</b>
+        <b>{{ cartStore.totalPrice }}руб.</b>
       </div>
 
       <button

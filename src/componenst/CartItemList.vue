@@ -1,14 +1,17 @@
 <script setup>
-import { inject } from 'vue'
+import { useCartStore } from '@/_helpers/cart.store';
 import CartItem from './CartItem.vue'
 
-const { cart, removeFromCart } = inject('cart')
+//const { cart, removeFromCart } = inject('cart')
+
+const cartStore = useCartStore()
+const cartProp = cartStore.cart
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <CartItem
-      v-for="item in cart"
+      v-for="item in cartProp"
       :key="item.id"
       :title="item.title"
       :price="item.price"

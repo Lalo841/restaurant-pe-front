@@ -1,11 +1,11 @@
 <script setup>
+//ЭТО Header для пользователя, пока индус версия
 import { ref } from 'vue'
 
 defineProps({
   totalPrice: Number
 })
 const emit = defineEmits(['openDrawer'])
-
 
 // //инпут в heade не работает , надо сделать глобальным его состояние
 // let headerSearchValue;
@@ -16,34 +16,38 @@ const emit = defineEmits(['openDrawer'])
 //переменная выпадющего меню для бронирования
 let isOpen = ref(false)
 
+import { useAuthStore } from '@/_helpers/auth.store'
+const authStore = useAuthStore()
 </script>
 
 <template>
   <header class="flex justify-between px-4 py-1 bg-red-600">
-    <router-link to="/">
-      <div class="flex items-center gap-4">
-        <img class="w-28" src="../../public/logo2.png" alt="Logo" />
-        <!-- Инпут можно вынести в компонент в дальнейшем -->
-        <div class="relative">
-          <img class="absolute left-4 top-3" src="/search.svg" />
-          <input
-            @input="onChangeSearchInput"
-            class="border rounded-full py-2 pl-11 pr-4 outline-none focus:border-gray-400"
-            type="text"
-            placeholder="Поиск..."
-          />
-        </div>
+    <div class="flex items-center gap-4">
+      <img class="w-28" src="../../public/logo2.png" alt="Logo" />
+      <!-- Инпут можно вынести в компонент в дальнейшем -->
+      <div class="relative">
+        <img class="absolute left-4 top-3" src="/search.svg" />
+        <input
+          @input="onChangeSearchInput"
+          class="border rounded-full py-2 pl-11 pr-4 outline-none focus:border-gray-400"
+          type="text"
+          placeholder="Поиск..."
+        />
       </div>
-    </router-link>
+    </div>
 
     <ul class="flex items-center gap-10">
-      <router-link to="/">
+      <router-link to="/userpage/catalog">
         <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
           <span>Каталог</span>
         </li>
       </router-link>
 
-      <router-link to="/about">
+      <li>
+        <span @click="authStore.logout()">Выход</span>
+      </li>
+
+      <router-link to="/userpage/about">
         <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
           <span>О нас</span>
         </li>
@@ -96,28 +100,40 @@ let isOpen = ref(false)
             </table>
           </div>
         </div>
+      </li>
+      <router-link to="/userpage/sys-info">
+        <li
+          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white w-36"
+        >
+          <span>Информация о системе</span>
+        </li>
+      </router-link>
+      <router-link to="/userpage/dev-info">
+        <li
+          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white w-36"
+        >
+          <span>Информация о разработчиках</span>
+        </li>
+      </router-link>
 
-      </li>
-      <li
-        class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white w-36"
-      >
-        <span>Информация о системе</span>
-      </li>
-      <li
-        class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white w-36"
-      >
-        <span>Информация о разработчиках</span>
-      </li>
-      <li @click="() => emit('openDrawer')" class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
-        <img src="/cart.svg" alt="Cart" />
-        <b>{{ totalPrice }} руб.</b>
-      </li>
-      <li
-        class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white mr-6"
-      >
-        <img src="/profile.svg" alt="Profile" />
-        <span>Профиль</span>
-      </li>
+      <router-link to="/userpage/cart">
+        <li
+          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white"
+        >
+          <img src="/cart.svg" alt="Cart" />
+          Корзина
+          <!-- <b>{{ totalPrice }} руб.</b> -->
+        </li>
+      </router-link>
+      
+      <router-link to="/userpage/profile">
+        <li
+          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white mr-6"
+        >
+          <img src="/profile.svg" alt="Profile" />
+          <span>Профиль</span>
+        </li>
+      </router-link>
     </ul>
   </header>
 </template>
