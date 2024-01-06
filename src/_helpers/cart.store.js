@@ -13,14 +13,14 @@ export const useCartStore = defineStore('cart', {
 
   actions: {
     addToCart(item) {
-      this.cart.push(item)
       item.isAdded = true
+      this.cart.push(item)
       localStorage.setItem(item.id, item)
     },
 
     removeFromCart(item) {
-      this.cart.splice(this.cart.indexOf(item), 1)
       item.isAdded = false
+      this.cart.splice(this.cart.indexOf(item), 1)
       localStorage.removeItem(item.id)
     }
   }

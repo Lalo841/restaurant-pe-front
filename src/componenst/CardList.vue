@@ -26,7 +26,7 @@ const emit = defineEmits(['addToCart'])
       :key="item.id"
       :id="item.id"
       :name="item.name"
-      :image-url="item.image"
+      :imageUrl="item.image"
       :price="item.price"
       :is-added="false"
       :onClickAdd="() => emit('addToCart', item)"

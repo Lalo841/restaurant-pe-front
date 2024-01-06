@@ -2,10 +2,22 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import LoginForm from '../pages/LoginForm.vue'
 import RegisterForm from '../pages/RegisterForm.vue'
-import Catalog from '../pages/Catalog.vue'
-import About from '../pages/About.vue'
-import UserPage from '../pages/UserPage.vue'
-import CartPage from '../pages/CartPage.vue'
+
+import Catalog from '../pages/user_pages/Catalog.vue'
+import About from '../pages/user_pages/About.vue'
+import UserPage from '../pages/user_pages/UserPage.vue'
+import CartPage from '../pages/user_pages/CartPage.vue'
+
+import AdminPage from '../pages/admin_pages/AdminPage.vue'
+import CatalogAdmin from '../pages/admin_pages/CatalogAdmin.vue'
+import Personal from '../pages/admin_pages/Personal.vue'
+
+import ManagerPage from '../pages/manager_pages/ManagerPage.vue'
+import Bron from '../pages/manager_pages/Bron.vue'
+import Zakaz from '../pages/manager_pages/Zakaz.vue'
+
+import CourierPage from '../pages/courier_pages/CourierPage.vue'
+import ZakazCourier from '../pages/courier_pages/ZakazCourier.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -57,13 +69,62 @@ const router = createRouter({
       ]
     },
     {
-      path: '/admin',
-      component: About,
+      path: '/adminpage',
+      component: AdminPage,
       name: 'Admin',
       meta: {
         requiredAuth: true,
         role: 0
-      }
+      },
+      children: [
+        {
+          path: 'catalog-admin',
+          name: 'CatalogAdmin',
+          component: CatalogAdmin
+        },
+        {
+          path: 'personal',
+          name: 'Personal',
+          component: Personal
+        }
+      ]
+    },
+    {
+      path: '/managerpage',
+      component: ManagerPage,
+      name: 'Manager',
+      meta: {
+        requiredAuth: true,
+        role: 1
+      },
+      children: [
+        {
+          path: 'reservations',
+          name: 'Reservations',
+          component: Bron
+        },
+        {
+          path: 'orders',
+          name: 'Orders',
+          component: Zakaz
+        },
+      ]
+    },
+    {
+      path: '/courierpage',
+      component: CourierPage,
+      name: 'Courier',
+      meta: {
+        requiredAuth: true,
+        role: 2
+      },
+      children: [
+        {
+          path: 'orders-courier',
+          name: 'OrdersCourier',
+          component: ZakazCourier
+        }
+      ]
     },
     {
       path: '/zapret',

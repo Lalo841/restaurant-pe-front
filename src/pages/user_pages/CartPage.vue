@@ -1,13 +1,13 @@
 <script setup>
 import { useCartStore } from '@/_helpers/cart.store'
 
-import CartItemList from '../componenst/CartItemList.vue'
+import CartItemList from '../../componenst/CartItemList.vue'
 
 const cartStore = useCartStore()
 </script>
 
 <template>
-  <div class="bg-orange-100 p-10">
+  <div class="bg-orange-100 p-10 min-h-screen">
     <CartItemList />
 
     <div class="flex flex-col gap-4 my-6">

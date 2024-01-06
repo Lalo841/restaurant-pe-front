@@ -5,19 +5,17 @@ const props = defineProps({
   imageUrl: String,
   price: Number,
   isAdded: Boolean,
-  onClickAdd: Function,
+  onClickAdd: Function
 })
 
-
-const fullUrl = `http://82.179.49.231:9000/images/${props.imageUrl}`
+const fullUrl = `http://185.128.106.222:9000/images/${props.imageUrl}`
 </script>
 
 <template>
   <div
-    class="bg-orange-100 border border-orange-200 rounded-3xl p-8 cursor-pointer transition hover:-translate-y-2 hover:shadow-xl"
+    class="bg-orange-100 border border-orange-200 rounded-3xl p-8 cursor-pointer transition hover:-translate-y-2 hover:shadow-2xl"
   >
-
-    <img class="rounded-xl" :src='fullUrl' alt="ProductPicture" /> 
+    <img class="rounded-xl" :src="fullUrl" alt="ProductPicture" />
     <p class="mt-2">{{ name }}</p>
 
     <div class="flex justify-between mt-5">

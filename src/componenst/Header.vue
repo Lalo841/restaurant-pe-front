@@ -22,10 +22,10 @@ const authStore = useAuthStore()
 
 <template>
   <header class="flex justify-between px-4 py-1 bg-red-600">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center">
       <img class="w-28" src="../../public/logo2.png" alt="Logo" />
-      <!-- Инпут можно вынести в компонент в дальнейшем -->
-      <div class="relative">
+
+      <!-- <div class="relative">
         <img class="absolute left-4 top-3" src="/search.svg" />
         <input
           @input="onChangeSearchInput"
@@ -33,28 +33,24 @@ const authStore = useAuthStore()
           type="text"
           placeholder="Поиск..."
         />
-      </div>
+      </div> -->
     </div>
 
-    <ul class="flex items-center gap-10">
+    <ul class="flex items-center gap-14">
       <router-link to="/userpage/catalog">
-        <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
+        <li class="flex items-center cursor-pointer gap-4 text-lg text-slate-300 hover:text-white">
           <span>Каталог</span>
         </li>
       </router-link>
 
-      <li>
-        <span @click="authStore.logout()">Выход</span>
-      </li>
-
       <router-link to="/userpage/about">
-        <li class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white">
+        <li class="flex items-center cursor-pointer gap-4 text-lg text-slate-300 hover:text-white">
           <span>О нас</span>
         </li>
       </router-link>
 
       <!-- Меню с ресторанами -->
-      <li class="flex items-center gap-3 text-lg text-slate-300">
+      <li class="flex items-center gap-4 text-lg text-slate-300">
         <div class="relative flex items-center gap-2">
           <span class="cursor-pointer hover:text-white" @click="isOpen = !isOpen"
             >Адрес ресторана</span
@@ -103,37 +99,39 @@ const authStore = useAuthStore()
       </li>
       <router-link to="/userpage/sys-info">
         <li
-          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white w-36"
+          class="flex items-center cursor-pointer gap-4 text-lg text-slate-300 hover:text-white w-36"
         >
           <span>Информация о системе</span>
         </li>
       </router-link>
       <router-link to="/userpage/dev-info">
         <li
-          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white w-36"
+          class="flex items-center cursor-pointer gap-4 text-lg text-slate-300 hover:text-white w-36"
         >
           <span>Информация о разработчиках</span>
         </li>
       </router-link>
 
       <router-link to="/userpage/cart">
-        <li
-          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white"
-        >
+        <li class="flex items-center cursor-pointer gap-4 text-lg text-slate-300 hover:text-white">
           <img src="/cart.svg" alt="Cart" />
           Корзина
           <!-- <b>{{ totalPrice }} руб.</b> -->
         </li>
       </router-link>
-      
+
       <router-link to="/userpage/profile">
         <li
-          class="flex items-center cursor-pointer gap-3 text-lg text-slate-300 hover:text-white mr-6"
+          class="flex items-center cursor-pointer gap-4 text-lg text-slate-300 hover:text-white mr-6"
         >
           <img src="/profile.svg" alt="Profile" />
           <span>Профиль</span>
         </li>
       </router-link>
+
+      <li class="flex items-center cursor-pointer gap-4 text-lg text-slate-300 hover:text-white mr-6">
+        <span @click="authStore.logout()">Выход</span>
+      </li>
     </ul>
   </header>
 </template>

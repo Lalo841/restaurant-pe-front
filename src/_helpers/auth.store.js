@@ -39,6 +39,8 @@ export const useAuthStore = defineStore('auth', {
       //   .catch((error) => console.log('error', error))
 
       //запрос на получение данных пользователя
+      //пока жестко , сделаем позже уже нормально получение, когда регистрацию доделаю. Пока для перехода по ролям, нужно менять поле role
+      // 0 - admin, 1 - manager, 2 - courier, 3 - user
       const user = { username: username, password: password, isAuth: true, role: 3 }
       //const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password })
 
@@ -50,9 +52,13 @@ export const useAuthStore = defineStore('auth', {
 
       // redirect to previous url or default to home page
       if (user.role === 0) {
-        router.push('/admin')
+        router.push('/adminpage/catalog-admin')
       } else if (user.role === 3) {
         router.push('/userpage/catalog')
+      } else if (user.role === 1) {
+        router.push('/managerpage/orders')
+      } else if (user.role === 2) {
+        router.push('/courierpage/orders-courier')
       }
 
       // router.push(this.returnUrl || '/catalog')
