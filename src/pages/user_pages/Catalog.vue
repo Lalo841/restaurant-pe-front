@@ -14,40 +14,44 @@ const cart = cartStore.cart
 //const cart = ref([])
 
 const items = ref([])
+const cuisineNum = ref()
 
 //const totalPrice = computed(() => cartStore.cart.value.reduce((acc, item) => acc + item.price, 0))
 
 //Если хранят объекты то используют reactive, иначе просто ref
 const filters = reactive({
   sortBy: 'name',
-  searchQuery: ''
+  searchQuery: '',
+  kitchen: ''
 })
 
-const onChangeSelect = (event) => {
-  filters.sortBy = event.target.value
-}
+// const onChangeSelect = (event) => {
+//   filters.sortBy = event.target.value
+// }
 
 const onChangeSearchInput = (event) => {
   filters.searchQuery = event.target.value
   console.log(filters.searchQuery)
 }
 
+//метод пробросил из дочернего компонента FilterPanel через emit, чтобы получать Id кухни
+const getCuisineId = (cuisineId) => {
+  filters.kitchen = cuisineId
+}
+
 const fetchItems = async () => {
   try {
-    const params = {
-      sortBy: filters.sortBy
-    }
-
-    if (filters.searchQuery) {
-      params.title = `*${filters.searchQuery}*`
-    }
-
+    // const params = {
+    //   sortBy: filters.sortBy
+    // }
+    // if (filters.searchQuery) {
+    //   params.title = `*${filters.searchQuery}*`
+    // }
     // const { data } = await axios.get('http://185.128.106.222:3000/dish/', {
     //   params
     // })
 
     const { data } = await axios.get('http://185.128.106.222:3000/dish/')
-    //console.log(typeof(data))
 
     /*этот костыль <dataWithCart> сделал по причине того что: добавил товар -> перешел в корзину,всё норм -> 
     -> вернулся в каталог -> товары не добавлены (кнопка неактивна), но в корзине они есть*/
@@ -59,9 +63,19 @@ const fetchItems = async () => {
         let cartItem = cart.find((itemCart) => itemCart.id === item.id)
         return cartItem ? cartItem : item
       })
-      .filter((item) => (item.name.includes(filters.searchQuery) ? item : null))
+      .filter((item) => {
+        if (filters.kitchen && item.kitchen !== filters.kitchen) {
+          return false
+        }
+        if (
+          filters.searchQuery &&
+          !item.name.toLowerCase().includes(filters.searchQuery.toLowerCase())
+        ) {
+          return false
+        }
+        return true
+      })
     items.value = dataWithCart
-    //console.log(items)
   } catch (err) {
     console.log(err)
   }
@@ -80,11 +94,6 @@ const onClickAddPlus = (item) => {
 }
 
 watch(filters, fetchItems)
-
-// provide('cart', {
-//   totalPrice
-// })
-
 onMounted(fetchItems)
 </script>
 
@@ -93,7 +102,11 @@ onMounted(fetchItems)
     <div class="bg-orange-100 p-10">
       <div class="flex flex-col">
         <h2 class="text-3xl font-bold mb-4">Кухни</h2>
-        <FilterPanel @input="onChangeSearchInput" />
+        <FilterPanel
+          @input="onChangeSearchInput"
+          @cuisine-id="getCuisineId"
+          @get-cuisine-all="getCuisineId"
+        />
       </div>
       <div class="mt-10">
         <CardList :items="items" @add-to-cart="onClickAddPlus" />

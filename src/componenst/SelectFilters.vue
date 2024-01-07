@@ -3,20 +3,19 @@ import { ref } from 'vue'
 
 defineProps({
   options: Array,
-  title: String
+  name: String
 })
 
 let optionIsOpen = ref(false)
 
-function selectOptionSorting(option) {
-  //$emit('select', option)
-}
+
 </script>
 
 <template>
   <div class="relative">
     <div class="flex items-center gap-2">
-      <p class="cursor-pointer text-white" @click="optionIsOpen = !optionIsOpen">{{ title }}</p>
+      <!-- <p class="cursor-pointer text-white" @click="optionIsOpen = !optionIsOpen">{{ name }}</p> -->
+      <p class="cursor-pointer text-white" @click="$emit('get-cuisine',name)">{{ name }}</p>
       <svg
         class="mt-1 cursor-pointer"
         @click="optionIsOpen = !optionIsOpen"
