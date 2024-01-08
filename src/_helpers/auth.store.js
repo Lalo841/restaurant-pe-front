@@ -15,8 +15,8 @@ export const useAuthStore = defineStore('auth', {
       myHeaders.append('Content-Type', 'application/json')
 
       var raw = JSON.stringify({
-        email: 'example@mail.ru',
-        password: '1234'
+        email: username.value,
+        password: password.value
       })
 
       var requestOptions = {
@@ -26,29 +26,24 @@ export const useAuthStore = defineStore('auth', {
         redirect: 'follow'
       }
 
-      // fetch('http://ioann44.ddns.net:3000/auth/staff', requestOptions)
-      //   .then((response) => response.json())
-      //   .then((result) => {
-      //     ///const receivedObject = JSON.parse(result)
-      //     user = result.user
-      //     this.user = user
-      //     this.user.isAuth = true
-      //     localStorage.setItem('user', JSON.stringify(user))
-
-      //   })
-      //   .catch((error) => console.log('error', error))
+      const req = await fetch('http://185.128.106.222:3000/auth/staff', requestOptions);
+      if (!req.ok) {
+        return;
+      }
+      const reqJson = await req.json();
+      const user = { ...reqJson.user, isAuth: true };
+      localStorage.setItem('user', JSON.stringify(user))
 
       //запрос на получение данных пользователя
       //пока жестко , сделаем позже уже нормально получение, когда регистрацию доделаю. Пока для перехода по ролям, нужно менять поле role
       // 0 - admin, 1 - manager, 2 - courier, 3 - user
-      const user = { username: username, password: password, isAuth: true, role: 0 }
+      "const user = { username: username, password: password, isAuth: true, role: 0 }"
       //const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password })
 
       // update pinia state
       //this.userState = user
       // store user details and jwt in local storage to keep user logged in between page refreshes
-
-      localStorage.setItem('user', JSON.stringify(user))
+      "localStorage.setItem('user', JSON.stringify(user))"
 
       // redirect to previous url or default to home page
       if (user.role === 0) {
