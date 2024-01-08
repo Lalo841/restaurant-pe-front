@@ -5,7 +5,7 @@ defineProps({
   items: Array
 })
 
-const emit = defineEmits(['addToCart'])
+const emit = defineEmits(['addToCart', 'openChoiceProduct'])
 
 // const b = {
 //   id: 1,
@@ -31,6 +31,7 @@ const emit = defineEmits(['addToCart'])
       :is-added="false"
       :onClickAdd="() => emit('addToCart', item)"
       :isAdded="item.isAdded"
+      :getIdForModal="() => emit('openChoiceProduct', item)"
     />
   </div>
 </template>

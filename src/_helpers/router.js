@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import LoginForm from '../pages/LoginForm.vue'
 import RegisterForm from '../pages/RegisterForm.vue'
+import AccessDenied from '../pages/AccessDenied.vue'
 
 import Catalog from '../pages/user_pages/Catalog.vue'
 import About from '../pages/user_pages/About.vue'
@@ -25,6 +26,11 @@ const router = createRouter({
     {
       path: '/',
       name: 'Login',
+      component: LoginForm
+    },
+    {
+      path: '/registration',
+      name: 'Registration',
       component: RegisterForm
     },
     {
@@ -107,7 +113,7 @@ const router = createRouter({
           path: 'orders',
           name: 'Orders',
           component: Zakaz
-        },
+        }
       ]
     },
     {
@@ -129,7 +135,7 @@ const router = createRouter({
     {
       path: '/zapret',
       name: 'Zapret',
-      component: LoginForm
+      component: AccessDenied
     }
   ]
 })

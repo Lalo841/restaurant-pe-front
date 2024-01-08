@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import router from './router.js'
+import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -10,64 +11,83 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    async login(username, password) {
-      var myHeaders = new Headers()
-      myHeaders.append('Content-Type', 'application/json')
-
-      var raw = JSON.stringify({
-        email: 'example@mail.ru',
-        password: '1234'
-      })
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+    async login(email, password) {
+      let reqPath = 'http://185.128.106.222:3000/auth'
+      if (email === 'example@mail.ru') {
+        reqPath = 'http://185.128.106.222:3000/auth/staff'
       }
 
-      // fetch('http://ioann44.ddns.net:3000/auth/staff', requestOptions)
-      //   .then((response) => response.json())
-      //   .then((result) => {
-      //     ///const receivedObject = JSON.parse(result)
-      //     user = result.user
-      //     this.user = user
-      //     this.user.isAuth = true
-      //     localStorage.setItem('user', JSON.stringify(user))
+      axios
+        .post(reqPath, {
+          // email: "example2@mail.ru",
+          // password: "1234"
+          email: email,
+          password: password
+        })
+        .then(function (response) {
+          let user = response.data.user
+          user.isAuth = true
 
-      //   })
-      //   .catch((error) => console.log('error', error))
+          localStorage.setItem('user', JSON.stringify(user))
+
+          if (user.role === 0) {
+            router.push('/adminpage/catalog-admin')
+          } else if (user.role === 3) {
+            router.push('/userpage/catalog')
+          } else if (user.role === 1) {
+            router.push('/managerpage/orders')
+          } else if (user.role === 2) {
+            router.push('/courierpage/orders-courier')
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       //запрос на получение данных пользователя
       //пока жестко , сделаем позже уже нормально получение, когда регистрацию доделаю. Пока для перехода по ролям, нужно менять поле role
       // 0 - admin, 1 - manager, 2 - courier, 3 - user
-      const user = { username: username, password: password, isAuth: true, role: 0 }
-      //const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password })
-
-      // update pinia state
-      //this.userState = user
-      // store user details and jwt in local storage to keep user logged in between page refreshes
-
-      localStorage.setItem('user', JSON.stringify(user))
-
-      // redirect to previous url or default to home page
-      if (user.role === 0) {
-        router.push('/adminpage/catalog-admin')
-      } else if (user.role === 3) {
-        router.push('/userpage/catalog')
-      } else if (user.role === 1) {
-        router.push('/managerpage/orders')
-      } else if (user.role === 2) {
-        router.push('/courierpage/orders-courier')
-      }
-
-      // router.push(this.returnUrl || '/catalog')
+      //const user = { username: email, password: password, isAuth: true, role: 3 }
     },
 
     logout() {
       //this.userState = null
       localStorage.removeItem('user')
       router.push('/')
+    },
+
+    registration(email, password, fullName, phone, address) {
+      let data = JSON.stringify({
+        email: email,
+        password: password,
+        fullName: fullName,
+        phone: phone,
+        address: address
+      })
+
+      let config = {
+        method: 'put',
+        maxBodyLength: Infinity,
+        url: 'http://185.128.106.222:3000/auth',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: data
+      }
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log('Регистрация прошла успешно')
+          let user = response.data.user
+          user.isAuth = true
+          localStorage.setItem('user', JSON.stringify(user))
+          router.push('/userpage/catalog')
+          console.log(JSON.stringify(response.data))
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 })

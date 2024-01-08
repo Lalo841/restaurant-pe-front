@@ -8,12 +8,14 @@ export const useCartStore = defineStore('cart', {
     }
   },
   getters: {
-    totalPrice: (state) => state.cart.reduce((acc, item) => acc + item.price, 0)
+    totalPrice: (state) =>
+      state.cart.reduce((acc, item) => acc + item.price * item.countOfProduct, 0)
   },
 
   actions: {
     addToCart(item) {
       item.isAdded = true
+      item.countOfProduct = 1
       this.cart.push(item)
       localStorage.setItem(item.id, item)
     },

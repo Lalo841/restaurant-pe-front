@@ -13,10 +13,12 @@ const cartProp = cartStore.cart
     <CartItem
       v-for="item in cartProp"
       :key="item.id"
+      :id ="item.id"
       :name="item.name"
       :price="item.price"
       :image-url="item.image"
       @on-click-remove="() => cartStore.removeFromCart(item)"
+     
     />
   </div>
 </template>

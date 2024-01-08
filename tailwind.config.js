@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        'filter-panel' : '#E86F21'
+        'filter-panel' : '#E86F21',
+        'modal-panel' : '#C4A189'
       }
     },
   },

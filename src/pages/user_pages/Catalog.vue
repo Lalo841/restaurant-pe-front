@@ -6,6 +6,7 @@ import { useCartStore } from '@/_helpers/cart.store'
 
 import CardList from '../../componenst/CardList.vue'
 import FilterPanel from '@/componenst/FilterPanel.vue'
+import DescModal from '@/componenst/DescModal.vue'
 
 const cartStore = useCartStore()
 const cart = cartStore.cart
@@ -24,6 +25,19 @@ const filters = reactive({
   searchQuery: '',
   kitchen: ''
 })
+
+let itemForModal = {}
+//  reactive({
+//   calories: '',
+//   category: '',
+//   desc: '',
+//   id: '',
+//   image: '',
+//   kitchen: '',
+//   name: '',
+//   price: '',
+//   weight: ''
+// })
 
 // const onChangeSelect = (event) => {
 //   filters.sortBy = event.target.value
@@ -53,7 +67,7 @@ const fetchItems = async () => {
 
     const { data } = await axios.get('http://185.128.106.222:3000/dish/')
 
-    /*этот костыль <dataWithCart> сделал по причине того что: добавил товар -> перешел в корзину,всё норм -> 
+    /*этот костыль <dataWithCart> сделал по причине того что: добавил товар -> перешел в корзину,всё норм ->
     -> вернулся в каталог -> товары не добавлены (кнопка неактивна), но в корзине они есть*/
 
     /*после проверки на принадлежность к корзине, фильтрую , пока только по Поиску*/
@@ -93,12 +107,45 @@ const onClickAddPlus = (item) => {
   }
 }
 
+const onClickAddInModal = () => {
+
+  if(!cart.includes(itemForModal)){
+    cartStore.addToCart(itemForModal)
+  } 
+  addString.value = 'Добавлено'
+
+}
+
+const addString = ref('Добавить')
+
+const openChoiceProduct = (item) => {
+  itemForModal = item
+  isOpenModal.value = !isOpenModal.value
+  console.log(itemForModal)
+}
+
+const closeModalWindow = () => {
+  isOpenModal.value = !isOpenModal.value
+}
+
+const isOpenModal = ref(false)
+
 watch(filters, fetchItems)
 onMounted(fetchItems)
 </script>
 
 <template>
   <div>
+    <DescModal
+      v-if="isOpenModal"
+      :name="itemForModal.name"
+      :price="itemForModal.price"
+      :imageUrl="itemForModal.image"
+      :desc="itemForModal.desc"
+      @close-modal-window="closeModalWindow"
+      :onClickAdd = "onClickAddInModal"
+      :addString="addString"
+    />
     <div class="bg-orange-100 p-10">
       <div class="flex flex-col">
         <h2 class="text-3xl font-bold mb-4">Кухни</h2>
@@ -109,7 +156,11 @@ onMounted(fetchItems)
         />
       </div>
       <div class="mt-10">
-        <CardList :items="items" @add-to-cart="onClickAddPlus" />
+        <CardList
+          :items="items"
+          @add-to-cart="onClickAddPlus"
+          @open-choice-product="openChoiceProduct"
+        />
       </div>
     </div>
   </div>
