@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
       //запрос на получение данных пользователя
       //пока жестко , сделаем позже уже нормально получение, когда регистрацию доделаю. Пока для перехода по ролям, нужно менять поле role
       // 0 - admin, 1 - manager, 2 - courier, 3 - user
-      const user = { username: username, password: password, isAuth: true, role: 3 }
+      const user = { username: username, password: password, isAuth: true, role: 0 }
       //const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password })
 
       // update pinia state
