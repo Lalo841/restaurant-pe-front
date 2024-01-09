@@ -11,8 +11,8 @@
 
       <!-- Записи с менеджерами -->
       <div v-for="(manager, index) in managers" :key="index" class="record">
-        <span>{{ manager.name }}</span>
-        <span class="restaurant1">{{ manager.restaurant }}</span>
+        <span>{{ manager.fullName }}</span>
+        <span class="restaurant1">{{ manager.restaurant ? manager.restaurant.address : '-' }}</span>
         <button @click="deleteManager(index)" class="delete-btn">Удалить</button>
       </div>
 
@@ -31,7 +31,7 @@
 
       <!-- Записи с курьерами -->
       <div v-for="(courier, index) in couriers" :key="index" class="record">
-        <span>{{ courier.name }}</span>
+        <span>{{ courier.fullName }}</span>
         <!-- Добавьте другие поля для курьеров по необходимости -->
         <button @click="deleteCourier(index)" class="delete-btn">Удалить</button>
       </div>
@@ -45,7 +45,12 @@
       <div class="modal-content">
         <h2>Добавить менеджера</h2>
         <input v-model="newManager.name" placeholder="ФИО" class="input-field" />
-        <input v-model="newManager.restaurant" placeholder="Ресторан" class="input-field" />
+        <input v-model="newManager.email" placeholder="Email" class="input-field" />
+      <input v-model="newManager.password" type="password" placeholder="Пароль" class="input-field" />
+      <label for="restaurantSelect">Ресторан:</label>
+      <select id="restaurantSelect" v-model="newManager.restaurantId" class="input-field">
+        <option v-for="restaurant in restaurants" :key="restaurant.id" :value="restaurant.id">{{ restaurant.address }}</option>
+      </select>
         <div class="modal-buttons">
           <button @click="addManager" class="modal-btn">Добавить</button>
           <button @click="closeManagerModal" class="modal-btn">Отмена</button>
@@ -58,6 +63,8 @@
       <div class="modal-content">
         <h2>Добавить курьера</h2>
         <input v-model="newCourier.name" placeholder="ФИО" class="input-field" />
+<input v-model="newCourier.email" placeholder="Email" class="input-field" />
+        <input v-model="newCourier.password" type="password" placeholder="Пароль" class="input-field" />
         <!-- Добавьте другие поля по необходимости -->
         <div class="modal-buttons">
           <button @click="addCourier" class="modal-btn">Добавить</button>
@@ -78,29 +85,129 @@ export default {
       couriers: [],
       newManager: {
         name: '',
+email: '',
+        password: '',
         restaurant: '',
+restaurants: [],
       },
       newCourier: {
         name: '',
+email: '',
+        password: '',
         // Добавьте другие поля по необходимости
       },
       isManagerModalOpen: false,
       isCourierModalOpen: false,
+restaurantAddresses: [],
     };
   },
   methods: {
+async fetchManagersAndCouriers() {
+      try {
+        const response = await axios.get('http://185.128.106.222:3000/auth/staff', {
+          headers: {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+          }
+        });
+
+        this.managers = [];
+        this.couriers = [];
+
+        response.data.forEach((staffMember) => {
+          if (staffMember.role === 1) {
+            this.managers.push(staffMember);
+          } else if (staffMember.role === 2) {
+            this.couriers.push(staffMember);
+          }
+        });
+
+        const restaurantResponse = await axios.get('http://185.128.106.222:3000/restaurant/', {
+          headers: {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+          },
+        });
+        this.restaurants = restaurantResponse.data;
+        this.restaurantAddresses = restaurantResponse.data.map(restaurant => restaurant.address);
+      } catch (error) {
+        console.error('Ошибка при получении менеджеров и курьеров:', error);
+      }
+    },
     deleteManager(index) {
+const managerId = this.managers[index].id;
+      this.deleteStaffMember(managerId);
       this.managers.splice(index, 1);
     },
     deleteCourier(index) {
+const courierId = this.couriers[index].id;
+      this.deleteStaffMember(courierId);
       this.couriers.splice(index, 1);
     },
+async deleteStaffMember(staffId) {
+      try {
+        await axios.delete(`http://185.128.106.222:3000/auth/staff/${staffId}`, {
+          headers: {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+          }
+        });
+        console.log(`Сотрудник с ID ${staffId} успешно удален.`);
+      } catch (error) {
+        console.error(`Ошибка при удалении сотрудника с ID ${staffId}:`, error);
+      }
+    },
     addManager() {
-      this.managers.push({ name: this.newManager.name, restaurant: this.newManager.restaurant });
+      const selectedRestaurant = this.restaurants.find(restaurant => restaurant.id === this.newManager.restaurantId);
+      const data = {
+        email: this.newManager.email,
+        password: this.newManager.password,
+        fullName: this.newManager.name,
+        role: 1,
+        restaurant: {
+          id: selectedRestaurant ? selectedRestaurant.id : null,
+        },
+        phone: "+79315363563",
+        address: "г. Бузулук"
+      };
+
+      axios.put('http://185.128.106.222:3000/auth/staff', data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+        }
+      })
+      .then((response) => {
+        console.log('Менеджер успешно добавлен на сервер:', response.data);
+        this.managers.push(response.data);
+      })
+      .catch((error) => {
+        console.error('Ошибка при добавлении менеджера на сервер:', error);
+      });
+
       this.closeManagerModal();
     },
     addCourier() {
-      this.couriers.push({ name: this.newCourier.name });
+      const data = {
+        email: this.newCourier.email,
+        password: this.newCourier.password,
+        fullName: this.newCourier.name,
+        role: 2,
+        phone: "+79315363563",
+        address: "г. Бузулук"
+      };
+
+      axios.put('http://185.128.106.222:3000/auth/staff', data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+        }
+      })
+      .then((response) => {
+        console.log('Курьер успешно добавлен на сервер:', response.data);
+        this.couriers.push(response.data);
+      })
+      .catch((error) => {
+        console.error('Ошибка при добавлении курьера на сервер:', error);
+      });
+
       this.closeCourierModal();
     },
     openManagerModal() {
@@ -116,30 +223,12 @@ export default {
       this.isCourierModalOpen = false;
     },
   },
-  async created() {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: 'http://185.128.106.222:3000/auth/staff',
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
-      }
-    };
-
-    axios.request(config)
-      .then((response) => {
-        const allStaff = response.data;
-        const managersList = allStaff.filter(item => item.role === 1);
-        const couriersList = allStaff.filter(item => item.role === 2);
-        this.managers = managersList.map(item => { return { id: item.id, name: item.fullName, restaurant: item.restaurant ? item.restaurant.name : "" }; });
-        this.couriers = couriersList.map(item => { return { id: item.id, name: item.fullName }; })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  mounted() {
+    this.fetchManagersAndCouriers();
+  },
 };
 </script>
+
   
 <style scoped>
 /* Ваши стили здесь */
