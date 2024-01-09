@@ -1,28 +1,28 @@
 <template>
+  <div>
+    <!-- Заголовок "Новые заказы" -->
+    <h2 class="title">Новые заказы</h2>
     <div>
-      <!-- Заголовок "Новые заказы" -->
-      <h2 class="title">Новые заказы</h2>
-      <div>
-        <!-- Заголовки под Новые заказы -->
-        <div class="header1">
-          <span style="margin-right: 350px;">ФИО заказчика</span>
-          <span>Номер заказа</span>
-          <span>Адрес доставки</span>
-          <span>Время поступления</span>
-        </div>
-  
-        <!-- Записи с новыми заказами -->
-        <div v-for="(order, index) in newOrders" :key="index" class="record">
-          <span>{{ order.customerName }}</span>
-          <span>{{ order.orderNumber }}</span>
-          <span>{{ order.deliveryAddress }}</span>
-          <span>{{ order.orderTime }}</span>
-          <button @click="openOrderCompositionModal(index)" class="manage-btn">Управление</button>
-        </div>
+      <!-- Заголовки под Новые заказы -->
+      <div class="header1">
+        <span style="margin-right: 350px;">ФИО заказчика</span>
+        <span>Номер заказа</span>
+        <span>Адрес доставки</span>
+        <span>Время поступления</span>
       </div>
-  
-<!-- Заголовок "Текущие заказы" -->
-<h2 class="title">Текущие заказы</h2>
+
+      <!-- Записи с новыми заказами -->
+      <div v-for="(order, index) in newOrders" :key="index" class="record">
+        <span>{{ order.customerName }}</span>
+        <span>{{ order.orderNumber }}</span>
+        <span>{{ order.deliveryAddress }}</span>
+        <span>{{ order.orderTime }}</span>
+        <button @click="openOrderCompositionModal(index)" class="manage-btn">Управление</button>
+      </div>
+    </div>
+
+    <!-- Заголовок "Текущие заказы" -->
+    <h2 class="title">Текущие заказы</h2>
     <div>
       <!-- Заголовки под Текущие заказы -->
       <div class="header2">
@@ -37,59 +37,56 @@
         <span>{{ order.customerName }}</span>
         <span>{{ order.orderNumber }}</span>
         <span>{{ order.deliveryAddress }}</span>
-        <span>
-          {{ order.status }}
-
-        </span>
-          <!-- Добавляем кнопку для изменения статуса -->
-          <button @click="openStatusModal(index)" class="manage-btn">Изменить статус</button>
+        <span>{{ order.status }}</span>
+        <!-- Добавляем кнопку для изменения статуса -->
+        <button @click="openStatusModal(index)" class="manage-btn">Изменить статус</button>
       </div>
     </div>
 
-      <!-- Заголовок "История заказов" -->
-      <h2 class="title">История заказов</h2>
-      <div>
-        <!-- Заголовки под Историю заказов -->
-        <div class="header3">
-          <span>ФИО заказчика</span>
-          <span>Номер заказа</span>
-          <span>Адрес доставки</span>
-          <span>Курьер</span>
-          <span>Время поступления</span>
-          <span>Время исполнения</span>
-        </div>
-  
-        <!-- Записи с историей заказов -->
-        <div v-for="(order, index) in orderHistory" :key="index" class="record">
-          <span>{{ order.customerName }}</span>
-          <span>{{ order.orderNumber }}</span>
-          <span>{{ order.deliveryAddress }}</span>
-          <span>{{ order.courier }}</span>
-          <span>{{ order.orderTime }}</span>
-          <span>{{ order.executionTime }}</span>
-          <button @click="openOrderCompositionModal(index)" class="manage-btn">Состав заказа</button>
-        </div>
+    <!-- Заголовок "История заказов" -->
+    <h2 class="title">История заказов</h2>
+    <div>
+      <!-- Заголовки под Историю заказов -->
+      <div class="header3">
+        <span>ФИО заказчика</span>
+        <span>Номер заказа</span>
+        <span>Адрес доставки</span>
+        <span>Курьер</span>
+        <span>Время поступления</span>
+        <span>Время исполнения</span>
       </div>
-  
-      <!-- Модальное окно для состава заказа -->
-      <div v-if="isOrderCompositionModalOpen" class="modal">
-        <div class="modal-content">
-          <h2>Состав заказа №{{ selectedOrderIndex + 1 }}</h2>
-          <ul>
-            <li v-for="(item, itemIndex) in newOrders[selectedOrderIndex].composition" :key="itemIndex">{{ item }}</li>
-          </ul>
-  
-          <!-- Выпадающий список с курьерами -->
-          <label for="courier">Выберите курьера:</label>
-          <select v-model="selectedCourier" id="courier">
-            <option v-for="(courier, index) in couriers" :key="index" style="color: black;">{{ courier }}</option>
-          </select>
-  
-          <button @click="assignOrder" class="modal-btn">Назначить</button>
-          <button @click="closeOrderCompositionModal" class="modal-btn">Отмена</button>
-        </div>
+
+      <!-- Записи с историей заказов -->
+      <div v-for="(order, index) in orderHistory" :key="index" class="record">
+        <span>{{ order.customerName }}</span>
+        <span>{{ order.orderNumber }}</span>
+        <span>{{ order.deliveryAddress }}</span>
+        <span>{{ order.courier }}</span>
+        <span>{{ order.orderTime }}</span>
+        <span>{{ order.executionTime }}</span>
+        <button @click="openOrderCompositionModal(index)" class="manage-btn">Состав заказа</button>
       </div>
-       <!-- Модальное окно для выбора статуса -->
+    </div>
+
+    <!-- Модальное окно для состава заказа -->
+    <div v-if="isOrderCompositionModalOpen" class="modal">
+      <div class="modal-content">
+        <h2>Состав заказа №{{ selectedOrderIndex + 1 }}</h2>
+        <ul>
+          <li v-for="(item, itemIndex) in newOrders[selectedOrderIndex].composition" :key="itemIndex">{{ item }}</li>
+        </ul>
+        <!-- Выпадающий список с курьерами -->
+        <label for="courier">Выберите курьера:</label>
+        <select v-model="selectedCourier" id="courier">
+          <option v-for="(courier, index) in couriers" :key="index" :value="courier.id" style="color: black;">{{ courier.fullName }}</option>
+        </select>
+
+        <button @click="assignOrder" class="modal-btn">Назначить</button>
+        <button @click="closeOrderCompositionModal" class="modal-btn">Отмена</button>
+      </div>
+    </div>
+
+    <!-- Модальное окно для выбора статуса -->
     <div v-if="isStatusModalOpen" class="modal">
       <div class="modal-content">
         <h2>Выберите статус для заказа №{{ selectedOrderIndex + 1 }}</h2>
@@ -106,80 +103,230 @@
         <button @click="closeStatusModal" class="modal-btn">Отмена</button>
       </div>
     </div>
-    </div>
-  </template>
+  </div>
+</template>
   
-  <script>
-  export default {
-    data() {
-      return {
-        newOrders: [
-          { customerName: 'Иванов Иван Иванович', orderNumber: '12345', deliveryAddress: 'ул. Пушкина, д.10', orderTime: '12:00', composition: ['Блюдо 1', 'Блюдо 2'] },
-          // Добавьте другие записи по необходимости
-        ],
-        currentOrders: [],
-        orderHistory: [],
-        selectedOrderIndex: 0,
-        isOrderCompositionModalOpen: false,
-        selectedCourier: '',
-        couriers: ['Курьер 1', 'Курьер 2', 'Курьер 3'], // Замените на реальных курьеров
+<script>
+import axios from 'axios';
 
-
-    // Добавьте эти переменные
-    isStatusModalOpen: false,
-    selectedStatus: '',
-      };
+export default {
+  data() {
+    return {
+      newOrders: [],
+      currentOrders: [],
+      orderHistory: [],
+      selectedOrderIndex: 0,
+      isOrderCompositionModalOpen: false,
+      selectedCourier: '',
+      couriers: [],
+      isStatusModalOpen: false,
+      selectedStatus: '',
+    };
+  },
+  created() {
+    this.fetchOrders(); // Fetch all orders initially
+    this.fetchCouriers();
+  },
+  methods: {
+    fetchOrders() {
+      this.fetchNewOrders();
+      this.fetchCurrentOrders();
+      this.fetchOrderHistory();
     },
-    methods: {
+    fetchNewOrders() {
+      axios.get('http://185.128.106.222:3000/delivery/all', {
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+        }
+      })
+      .then(response => {
+        this.newOrders = response.data
+          .filter(order => order.status === 0)
+          .map(order => ({
+            customerName: order.client ? order.client.name : 'Неизвестный клиент',
+            orderNumber: order.id,
+            deliveryAddress: order.address,
+            orderTime: new Date(order.createDate).toLocaleTimeString(),
+            composition: order.dishes.map(dish => dish.name),
+          }));
+      })
+      .catch(error => {
+        console.error('Ошибка при получении новых заказов', error);
+      });
+    },
+    fetchCurrentOrders() {
+      axios.get('http://185.128.106.222:3000/delivery/all', {
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+        }
+      })
+      .then(response => {
+        this.currentOrders = response.data
+          .filter(order => order.status === 1 || order.status === 2)
+          .map(order => ({
+            customerName: order.client ? order.client.name : 'Неизвестный клиент',
+            orderNumber: order.id,
+            deliveryAddress: order.address,
+            status: order.status,
+          }));
+      })
+      .catch(error => {
+        console.error('Ошибка при получении текущих заказов', error);
+      });
+    },
+    fetchOrderHistory() {
+      axios.get('http://185.128.106.222:3000/delivery/all', {
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+        }
+      })
+      .then(response => {
+        this.orderHistory = response.data
+          .filter(order => order.status === 3)
+          .map(order => ({
+            customerName: order.client ? order.client.name : 'Неизвестный клиент',
+            orderNumber: order.id,
+            deliveryAddress: order.address,
+            courier: order.courier ? order.courier.fullName : 'Неизвестный курьер',
+            orderTime: new Date(order.createDate).toLocaleTimeString(),
+            executionTime: order.executionTime ? new Date(order.executionTime).toLocaleTimeString() : 'Неизвестно',
+          }));
+      })
+      .catch(error => {
+        console.error('Ошибка при получении истории заказов', error);
+      });
+    },
+    fetchCouriers() {
+      axios.get('http://185.128.106.222:3000/auth/staff', {
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+        }
+      })
+      .then(response => {
+        this.couriers = response.data.filter(staff => staff.role === 1); // Фильтрация только курьеров
+      })
+      .catch(error => {
+        console.error('Ошибка при получении списка курьеров', error);
+      });
+    },
+      assignOrder() {
+  const selectedOrder = this.newOrders[this.selectedOrderIndex];
+  selectedOrder.courier = this.selectedCourier;
+
+  // Определите статус в зависимости от сценария
+  const status =
+    this.selectedStatus === 'Доставлен' ? 3 : // 3 - статус "Доставлен"
+    this.selectedStatus === 'Передан курьеру' ? 2 : // 2 - статус "Передан курьеру"
+    1; // 1 - статус по умолчанию
+
+  // Отправка данных на сервер
+  this.updateOrderOnServer(selectedOrder, status)
+    .then(() => {
+      // После успешного обновления на сервере, обновляем локальные данные
+      if (status === 1) {
+        // Если выбран курьер из списка, обновляем статус на "Передан курьеру" (1)
+        this.currentOrders.push(selectedOrder);
+        this.newOrders.splice(this.selectedOrderIndex, 1);
+      } else {
+        // Иначе, если выбран статус "Передан курьеру" или "Доставлен", обновляем статус и перемещаем в текущие заказы
+        selectedOrder.status = status;
+        this.currentOrders.push(selectedOrder);
+        this.newOrders.splice(this.selectedOrderIndex, 1);
+      }
+
+      // Закрываем модальное окно
+      this.closeOrderCompositionModal();
+    })
+    .catch(error => {
+      console.error('Ошибка при обновлении заказа на сервере', error);
+      // Обработка ошибок, например, вывод сообщения пользователю
+    });
+},
+
+
+    // Функция для обновления заказа на сервере
+    updateOrderOnServer(order, status) {
+      const data = {
+        id: order.id,
+        status: status, // 1 - статус "Передан курьеру", адаптируйте под ваш бекенд
+        courier: {
+          id: this.selectedCourier
+        },
+        // Дополнительные поля, если необходимо
+      };
+
+      // Отправляем запрос на сервер
+      return axios.patch(`http://185.128.106.222:3000/delivery/`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+        }
+      });
+    },
+
       openOrderCompositionModal(index) {
         this.selectedOrderIndex = index;
         this.isOrderCompositionModalOpen = true;
       },
-      assignOrder() {
-        // Добавляем выбранного курьера к текущему заказу
+      assignOrder1() {
         const selectedOrder = this.newOrders[this.selectedOrderIndex];
         selectedOrder.courier = this.selectedCourier;
   
-        // Перемещаем заказ из новых заказов в текущие заказы
         this.currentOrders.push(selectedOrder);
-  
-        // Удаляем заказ из новых заказов
         this.newOrders.splice(this.selectedOrderIndex, 1);
   
-        // Закрываем модальное окно
         this.closeOrderCompositionModal();
       },
       closeOrderCompositionModal() {
         this.isOrderCompositionModalOpen = false;
-        // Сбрасываем выбранного курьера при закрытии модального окна
         this.selectedCourier = '';
       },
-      // Открывает модальное окно для изменения статуса
-    openStatusModal(index) {
-      this.selectedOrderIndex = index;
-      this.isStatusModalOpen = true;
-    },
-    closeStatusModal() {
-    this.isStatusModalOpen = false;
-    this.selectedStatus = '';
-  },
+      openStatusModal(index) {
+        this.selectedOrderIndex = index;
+        this.isStatusModalOpen = true;
+      },
+      closeStatusModal() {
+        this.isStatusModalOpen = false;
+        this.selectedStatus = '';
+      },
+      updateOrderStatus() {
+        const selectedOrder = this.currentOrders[this.selectedOrderIndex];
+        selectedOrder.status = this.selectedStatus;
   
-    // Применяет изменения статуса заказа
-    updateOrderStatus() {
-      const selectedOrder = this.currentOrders[this.selectedOrderIndex];
-      selectedOrder.status = this.selectedStatus;
+        if (this.selectedStatus === 'Доставлен') {
+          const originalOrderTime = selectedOrder.orderTime;
+          selectedOrder.executionTime = new Date().toLocaleTimeString();
+          selectedOrder.orderTime = originalOrderTime;
+          this.orderHistory.push(selectedOrder);
+          this.currentOrders.splice(this.selectedOrderIndex, 1);
+        }
+  
+        this.closeStatusModal();
+        this.updateOrderStatusBackend(selectedOrder); // Вызовите метод для обновления статуса в бекенде
+      },
 
-      if (this.selectedStatus === 'Доставлен') {
-        const originalOrderTime = selectedOrder.orderTime;
-        // Перемещаем заказ из текущих заказов в историю заказов
-        selectedOrder.executionTime = new Date().toLocaleTimeString();
-        selectedOrder.orderTime = originalOrderTime;
-        this.orderHistory.push(selectedOrder);
-        this.currentOrders.splice(this.selectedOrderIndex, 1);
-      }
-
-      this.closeStatusModal();
-    },
+      updateOrderStatusBackend(order) {
+        const data = {
+          id: order.id, // Замените это на фактическое имя свойства для идентификатора заказа в вашем бекенде
+          status: order.status,
+          courier: {
+            id: order.courier.id // Замените это на фактическое имя свойства для идентификатора курьера в вашем бекенде
+          }
+        };
+  
+        axios.patch(`http://185.128.106.222:3000/delivery/`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+          }
+        })
+        .then(response => {
+          console.log('Статус заказа успешно обновлен', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при обновлении статуса заказа', error);
+        });
+      },
     },
   };
   </script>

@@ -1,147 +1,244 @@
 <template>
+  <div>
+    <!-- Заголовок "Новые брони" -->
+    <h2 class="title">Новые брони</h2>
     <div>
-      <!-- Заголовок "Новые брони" -->
-      <h2 class="title">Новые брони</h2>
-      <div>
-        <!-- Заголовки под Новые брони -->
-        <div class="header1">
-          <span style="margin-right: 250px;">ФИО заказчика</span>
-          <span>Номер брони</span>
-          <span>Адрес</span>
-          <span>Дата и время бронирования</span>
-        </div>
-  
-        <!-- Записи с новыми бронями -->
-        <div v-for="(reservation, index) in newReservations" :key="index" class="record">
-          <span>{{ reservation.customerName }}</span>
-          <span>{{ reservation.reservationNumber }}</span>
-          <span>{{ reservation.deliveryAddress }}</span>
-          <span>{{ formatDateTime(reservation.reservationDateTime) }}</span>
-          <button @click="openReservationModal(index)" class="manage-btn">Назначить столик</button>
-        </div>
+      <!-- Заголовки под Новые брони -->
+      <div class="header1">
+        <span style="margin-right: 250px;">ФИО заказчика</span>
+        <span>Номер брони</span>
+        <span>Адрес</span>
+        <span>Дата и время бронирования</span>
       </div>
-  
-      <!-- Заголовок "Текущие брони" -->
-      <h2 class="title">Текущие брони</h2>
-      <div>
-        <!-- Заголовки под Текущие брони -->
-        <div class="header2">
-          <span>ФИО заказчика</span>
-          <span>Номер брони</span>
-          <span>Адрес</span>
-          <span>Столик</span>
-        </div>
-  
-        <!-- Записи с текущими бронями -->
-        <div v-for="(reservation, index) in currentReservations" :key="index" class="record">
-          <span>{{ reservation.customerName }}</span>
-          <span>{{ reservation.reservationNumber }}</span>
-          <span>{{ reservation.deliveryAddress }}</span>
-          <span>{{ reservation.table }}</span>
-          <!-- Добавляем кнопку для завершения брони -->
-          <button @click="completeReservation(index)" class="manage-btn">Закончить бронь</button>
-        </div>
-      </div>
-  
-      <!-- Заголовок "История бронирования" -->
-      <h2 class="title">История бронирования</h2>
-      <div>
-        <!-- Заголовки под Историю бронирования -->
-        <div class="header3">
-          <span>ФИО заказчика</span>
-          <span>Номер брони</span>
-          <span>Адрес</span>
-          <span>Столик</span>
-          <span>Дата и время бронирования</span>
-          <span>Дата и время окончания бронирования</span>
-        </div>
-  
-        <!-- Записи с историей бронирования -->
-        <div v-for="(reservation, index) in reservationHistory" :key="index" class="record">
-          <span>{{ reservation.customerName }}</span>
-          <span>{{ reservation.reservationNumber }}</span>
-          <span>{{ reservation.deliveryAddress }}</span>
-          <span>{{ reservation.table }}</span>
-          <span>{{ formatDateTime(reservation.reservationDateTime) }}</span>
-          <span>{{ formatDateTime(reservation.endTime) }}</span>
-        </div>
-      </div>
-  
-      <!-- Модальное окно для бронирования столика -->
-      <div v-if="isReservationModalOpen" class="modal">
-        <div class="modal-content">
-          <h2>Бронирование столика №{{ selectedReservationIndex + 1 }}</h2>
-  
-          <!-- Выпадающий список со столиками -->
-          <label for="table">Выберите столик:</label>
-          <select v-model="selectedTable" id="table" style="color: black;">
-            <option v-for="(table, index) in tables" :key="index" style="color: black;">{{ table }}</option>
-          </select>
-  
-          <!-- Кнопки для бронирования и отмены -->
-          <button @click="reserveTable" class="modal-btn">Назначить</button>
-          <button @click="closeReservationModal" class="modal-btn">Отмена</button>
-        </div>
+
+      <!-- Записи с новыми бронями -->
+      <div v-for="(reservation, index) in newReservations" :key="index" class="record">
+        <span>{{ reservation.client && reservation.client.fullName ? reservation.client.fullName : 'Неизвестный клиент' }}</span>
+        <span>{{ reservation.id }}</span>
+        <span>{{ reservation.client && reservation.client.address ? reservation.client.address : 'Неизвестный адрес' }}</span>
+        <span>{{ formatDateTime(reservation.reservationDate) }}</span>
+        <button @click="openReservationModal(index)" class="manage-btn">Назначить столик</button>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        newReservations: [
-          { customerName: 'Иванов Иван Иванович', reservationNumber: '12345', deliveryAddress: 'ул. Пушкина, д.10', reservationDateTime: new Date('2023-01-01T12:00'), tables: ['Столик 1', 'Столик 2'] },
-          // Добавьте другие записи по необходимости
-        ],
-        currentReservations: [],
-        reservationHistory: [],
-        selectedReservationIndex: 0,
-        isReservationModalOpen: false,
-        selectedTable: '',
-        tables: ['Столик 1', 'Столик 2', 'Столик 3'], // Замените на реальные столики
-      };
+
+    <!-- Заголовок "Текущие брони" -->
+    <h2 class="title">Текущие брони</h2>
+    <div>
+      <!-- Заголовки под Текущие брони -->
+      <div class="header2">
+        <span>ФИО заказчика</span>
+        <span>Номер брони</span>
+        <span>Адрес</span>
+        <span>Столик</span>
+      </div>
+
+      <!-- Записи с текущими бронями -->
+      <div v-for="(reservation, index) in currentReservations" :key="index" class="record">
+        <span>{{ reservation.client && reservation.client.fullName ? reservation.client.fullName : 'Неизвестный клиент' }}</span>
+        <span>{{ reservation.id }}</span>
+        <span>{{ reservation.client && reservation.client.address ? reservation.client.address : 'Неизвестный адрес' }}</span>
+        <span>{{ reservation.tables.join(', ') }}</span>
+        <!-- Добавляем кнопку для завершения брони -->
+        <button @click="completeReservation(index)" class="manage-btn">Закончить бронь</button>
+      </div>
+    </div>
+
+    <!-- Заголовок "История бронирования" -->
+    <h2 class="title">История бронирования</h2>
+    <div>
+      <!-- Заголовки под Историю бронирования -->
+      <div class="header3">
+        <span>ФИО заказчика</span>
+        <span>Номер брони</span>
+        <span>Адрес</span>
+        <span>Столик</span>
+        <span>Дата и время бронирования</span>
+        <span>Дата и время окончания бронирования</span>
+      </div>
+
+      <!-- Записи с историей бронирования -->
+      <div v-for="(reservation, index) in reservationHistory" :key="index" class="record">
+        <span>{{ reservation.client.fullName }}</span>
+        <span>{{ reservation.id }}</span>
+        <span>{{ reservation.client.address }}</span>
+        <span>{{ reservation.tables.join(', ') }}</span>
+        <span>{{ formatDateTime(reservation.reservationDate) }}</span>
+        <span>{{ formatDateTime(reservation.endTime) }}</span>
+      </div>
+    </div>
+
+    <!-- Модальное окно для бронирования столика -->
+    <div v-if="isReservationModalOpen" class="modal">
+      <div class="modal-content">
+        <h2>Бронирование столика №{{ selectedReservationIndex + 1 }}</h2>
+
+        <!-- Выпадающий список со столиками -->
+        <label for="table">Выберите столик:</label>
+        <select v-model="selectedTable" id="table" style="color: black;">
+          <option v-for="(table, index) in tables" :key="index" style="color: black;">{{ table }}</option>
+        </select>
+
+        <!-- Кнопки для бронирования и отмены -->
+        <button @click="reserveTable" class="modal-btn">Назначить</button>
+        <button @click="closeReservationModal" class="modal-btn">Отмена</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      newReservations: [],
+      currentReservations: [],
+      reservationHistory: [],
+      selectedReservationIndex: 0,
+      isReservationModalOpen: false,
+      selectedTable: '',
+      tables: [], // Replace with real table data
+    };
+  },
+  created() {
+    this.fetchReservations(); // Fetch reservations initially
+  },
+  methods: {
+    fetchReservations() {
+      this.fetchNewReservations();
+      this.fetchCurrentReservations();
+      this.fetchReservationHistory();
     },
-    methods: {
-      openReservationModal(index) {
-        this.selectedReservationIndex = index;
-        this.isReservationModalOpen = true;
-      },
-      reserveTable() {
-        // Добавляем выбранный столик к текущей брони
-        const selectedReservation = this.newReservations[this.selectedReservationIndex];
-        selectedReservation.table = this.selectedTable;
-  
-        // Перемещаем бронь из новых броней в текущие брони
+    fetchNewReservations() {
+      axios.get('http://185.128.106.222:3000/reservations/all', {
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+        }
+      })
+      .then(response => {
+        this.newReservations = response.data
+          .filter(reservation => !reservation.tables || reservation.tables.length === 0)
+          .map(reservation => ({
+            id: reservation.id,
+            client: reservation.client,
+            deliveryAddress: reservation.client ? reservation.client.address : 'Неизвестный адрес',
+            reservationDate: reservation.reservationDate,
+          }));
+      })
+      .catch(error => {
+        console.error('Ошибка при получении новых броней', error);
+      });
+    },
+    fetchCurrentReservations() {
+  axios.get('http://185.128.106.222:3000/reservations/all', {
+    headers: {
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+    }
+  })
+  .then(response => {
+    this.currentReservations = response.data
+      .filter(reservation => reservation.tables && reservation.tables.length > 0 && reservation.personsCount > 0)
+      .map(reservation => ({
+        id: reservation.id,
+        client: reservation.client,
+        deliveryAddress: reservation.client ? reservation.client.address : 'Неизвестный адрес',
+        tables: reservation.tables,
+      }));
+  })
+  .catch(error => {
+    console.error('Ошибка при получении текущих броней', error);
+  });
+},
+
+fetchReservationHistory() {
+  axios.get('http://185.128.106.222:3000/reservations/all', {
+    headers: {
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+    }
+  })
+  .then(response => {
+    this.reservationHistory = response.data
+      .filter(reservation => reservation.endTime || reservation.personsCount === 0)
+      .map(reservation => ({
+        id: reservation.id,
+        client: reservation.client,
+        deliveryAddress: reservation.client ? reservation.client.address : 'Неизвестный адрес',
+        tables: reservation.tables,
+        reservationDate: reservation.reservationDate,
+        endTime: reservation.endTime,
+      }));
+  })
+  .catch(error => {
+    console.error('Ошибка при получении истории бронирования', error);
+  });
+},
+
+    openReservationModal(index) {
+      this.selectedReservationIndex = index;
+      this.isReservationModalOpen = true;
+    },
+    reserveTable() {
+      const selectedReservation = this.newReservations[this.selectedReservationIndex];
+      const reservationId = selectedReservation.id;
+
+      const data = {
+        tables: [this.selectedTable],
+        client: {
+          id: selectedReservation.client.id,
+        },
+      };
+
+      axios.patch(`http://185.128.106.222:3000/reservations/`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+        },
+      })
+      .then(response => {
+        // Update the local data after a successful reservation
+        selectedReservation.tables = [this.selectedTable];
         this.currentReservations.push(selectedReservation);
-  
-        // Удаляем бронь из новых броней
         this.newReservations.splice(this.selectedReservationIndex, 1);
-  
-        // Закрываем модальное окно
+
+        // Close the reservation modal
         this.closeReservationModal();
-      },
-      closeReservationModal() {
-        this.isReservationModalOpen = false;
-        // Сбрасываем выбранный столик при закрытии модального окна
-        this.selectedTable = '';
-      },
-      // Завершает бронь и перемещает ее в историю бронирования
-      completeReservation(index) {
-        const selectedReservation = this.currentReservations[index];
-        selectedReservation.endTime = new Date();
-  
-        // Перемещаем бронь из текущих броней в историю бронирования
+      })
+      .catch(error => {
+        console.error('Ошибка при бронировании столика', error);
+      });
+    },
+    closeReservationModal() {
+      this.isReservationModalOpen = false;
+      this.selectedTable = '';
+    },
+    completeReservation(index) {
+      const selectedReservation = this.currentReservations[index];
+      const reservationId = selectedReservation.id;
+
+      axios.patch(`http://185.128.106.222:3000/reservations/`, { personsCount: 0 }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoxfQ.tXLyzqivhPuBcehRerTCZj_gkXGb5NAASDcP0nZr5hc'
+        },
+      })
+      .then(response => {
+        // Move the completed reservation to the history
         this.reservationHistory.push(selectedReservation);
         this.currentReservations.splice(index, 1);
-      },
-      formatDateTime(dateTime) {
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-        return new Date(dateTime).toLocaleDateString('ru-RU', options);
-      },
+        this.fetchNewReservations(); // Fetch new reservations again to update the data
+      })
+      .catch(error => {
+        console.error('Ошибка при завершении брони', error);
+      });
     },
-  };
-  </script>
+    formatDateTime(dateTime) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+      return new Date(dateTime).toLocaleDateString('ru-RU', options);
+    },
+  },
+};
+</script>
   
   <style scoped>
   /* Ваши стили здесь */
