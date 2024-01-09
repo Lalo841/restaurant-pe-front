@@ -17,6 +17,18 @@ export const useAuthStore = defineStore('auth', {
         reqPath = 'http://185.128.106.222:3000/auth/staff'
       }
 
+      // const user = { email: 'hui', password: 123, role: 3, isAuth: true }
+      // localStorage.setItem('user', JSON.stringify(user))
+      // if (user.role === 0) {
+      //   router.push('/adminpage/catalog-admin')
+      // } else if (user.role === 3) {
+      //   router.push('/userpage/catalog')
+      // } else if (user.role === 1) {
+      //   router.push('/managerpage/orders')
+      // } else if (user.role === 2) {
+      //   router.push('/courierpage/orders-courier')
+      // }
+
       axios
         .post(reqPath, {
           // email: "example2@mail.ru",
@@ -44,10 +56,10 @@ export const useAuthStore = defineStore('auth', {
           console.log(error)
         })
 
-      //запрос на получение данных пользователя
-      //пока жестко , сделаем позже уже нормально получение, когда регистрацию доделаю. Пока для перехода по ролям, нужно менять поле role
+      // запрос на получение данных пользователя
+      // пока жестко , сделаем позже уже нормально получение, когда регистрацию доделаю. Пока для перехода по ролям, нужно менять поле role
       // 0 - admin, 1 - manager, 2 - courier, 3 - user
-      //const user = { username: email, password: password, isAuth: true, role: 3 }
+      // const user = { username: email, password: password, isAuth: true, role: 3 }
     },
 
     logout() {

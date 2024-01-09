@@ -189,7 +189,7 @@ const itemData = reactive({
   id: '',
   name: '',
   price: 0,
-  description: '',
+  desc: '',
   imageUrl: '',
   weight: 0,
   category: '',
@@ -291,6 +291,7 @@ const handleImageUpload = (event) => {
     const file = fileInput.files[0]
     const imageUrl = URL.createObjectURL(file)
     itemData.imageUrl = imageUrl
+    console.log(imageUrl)
   }
 }
 
@@ -373,29 +374,19 @@ const editItem = async () => {
       const editedItem = items.value[editedItemIndex]
 
       // Обновите editedItem новыми данными
-      editItem.id = itemData.id
+      editedItem.id = itemData.id
       editedItem.name = itemData.name
       editedItem.price = itemData.price
-      editedItem.description = itemData.description
-      editedItem.imageUrl = itemData.imageUrl
+      editedItem.desc = itemData.desc
+      // editedItem.imageUrl = itemData.imageUrl
       editedItem.weight = itemData.weight
       editedItem.category = itemData.category
       editedItem.calories = itemData.calories
       editedItem.kitchen = itemData.kitchen
 
-      // axios
-      //   .patch('http://185.128.106.222:3000/dish/', editedItem)
-      //   .then((response) => {
-      //     console.log(JSON.stringify(response.data))
-      //   })
-      //   .catch((error) => {
-      //     console.log(error)
-      //   })
-
       let data = new FormData()
       data.append('data', JSON.stringify(editedItem))
       data.append('image', document.getElementById('imageUpload').files[0])
-      console.log(data)
 
       let config = {
         method: 'patch',
@@ -404,7 +395,7 @@ const editItem = async () => {
         headers: {
           Authorization:
             'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s',
-          ...data.getHeaders()
+          'Content-Type': 'multipart/form-data'
         },
         data: data
       }
