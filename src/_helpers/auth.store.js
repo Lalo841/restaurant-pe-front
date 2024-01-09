@@ -13,9 +13,22 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       let reqPath = 'http://185.128.106.222:3000/auth'
-      if (email === 'example@mail.ru') {
+
+      const { data } = await axios.get('http://185.128.106.222:3000/auth/staff', {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+        }
+      })
+
+      const staffEmails = data.map((item) => item.email)
+      if (staffEmails.includes(email)) {
         reqPath = 'http://185.128.106.222:3000/auth/staff'
       }
+
+      // if (email === 'example@mail.ru') {
+      //   reqPath = 'http://185.128.106.222:3000/auth/staff'
+      // }
 
       // const user = { email: 'hui', password: 123, role: 3, isAuth: true }
       // localStorage.setItem('user', JSON.stringify(user))
