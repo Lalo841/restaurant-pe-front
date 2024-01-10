@@ -108,12 +108,10 @@ const onClickAddPlus = (item) => {
 }
 
 const onClickAddInModal = () => {
-
-  if(!cart.includes(itemForModal)){
+  if (!cart.includes(itemForModal)) {
     cartStore.addToCart(itemForModal)
-  } 
+  }
   addString.value = 'Добавлено'
-
 }
 
 const addString = ref('Добавить')
@@ -143,7 +141,7 @@ onMounted(fetchItems)
       :imageUrl="itemForModal.image"
       :desc="itemForModal.desc"
       @close-modal-window="closeModalWindow"
-      :onClickAdd = "onClickAddInModal"
+      :onClickAdd="onClickAddInModal"
       :addString="addString"
     />
     <div class="bg-orange-100 p-10">

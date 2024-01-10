@@ -11,15 +11,40 @@ const reservationTable = async (object) => {
   const client = {
     id: JSON.parse(localStorage.getItem('user'))
   }
-  const tables = restaurants.value.find((item) => item.id === object.id).tables
-  let arrTable = []
-  tables.forEach((element) => {
-    arrTable.push(element.capacity)
-  })
+
+  console.log(object.reservationDate)
+
+  const rests = (
+    await axios.get('http://185.128.106.222:3000/restaurant/', {
+      data: JSON.stringify({ date: object.reservationDate.value })
+    })
+  ).data
+  console.log(JSON.stringify({ date: object.reservationDate.value }))
+  // try {
+  //   //restaurants.value = data
+  // } catch (err) {
+  //   console.log(err)
+  // }
+  console.log(rests)
+  const tables = rests.find((item) => item.id === object.id).tables
 
   //console.log(arrTable)
 
   const personsCount = object.personsCount.value
+  let personsLeft = personsCount
+  let arrTable = []
+
+  for (let i = 0; i < tables.length; i++) {
+    if (personsLeft > 0 && !tables[i].used) {
+      arrTable.push(tables[i].id)
+    }
+    personsLeft -= tables[i].capacity
+  }
+
+  if (personsLeft > 0) {
+    // не хваьило свободныз столов
+  }
+
   //let dat = object.reservationDate.replace('T', ' ')
   const reservationDate = object.reservationDate.value.replace('T', ' ')
 

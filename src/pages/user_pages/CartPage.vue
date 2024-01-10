@@ -16,10 +16,11 @@ const placeOrder = () => {
   })
 
   let dishesCountCart = []
-  dishesId.forEach((item) => {
+  cart.forEach((item) => {
     dishesCountCart.push(item.countOfProduct)
     console.log(item.name, item.countOfProduct)
   })
+  console.log(dishesCountCart)
 
   let personsCount = 2
   let addressUser = 'ул. Революционная, 46'

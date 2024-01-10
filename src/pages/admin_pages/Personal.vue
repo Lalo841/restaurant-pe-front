@@ -45,12 +45,26 @@
       <div class="modal-content">
         <h2>Добавить менеджера</h2>
         <input v-model="newManager.name" placeholder="ФИО" class="input-field" />
-        <input v-model="newManager.email" placeholder="Email" class="input-field" />
-      <input v-model="newManager.password" type="password" placeholder="Пароль" class="input-field" />
-      <label for="restaurantSelect">Ресторан:</label>
-      <select id="restaurantSelect" v-model="newManager.restaurantId" class="input-field">
-        <option v-for="restaurant in restaurants" :key="restaurant.id" :value="restaurant.id">{{ restaurant.address }}</option>
-      </select>
+        <input
+          v-model="newManager.email"
+          placeholder="Email"
+          class="input-field"
+          pattern="^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$"
+        />
+        <input
+          v-model="newManager.password"
+          type="password"
+          placeholder="Пароль"
+          class="input-field"
+          minlength="3"
+          maxlength="15"
+        />
+        <label for="restaurantSelect">Ресторан:</label>
+        <select id="restaurantSelect" v-model="newManager.restaurantId" class="input-field">
+          <option v-for="restaurant in restaurants" :key="restaurant.id" :value="restaurant.id">
+            {{ restaurant.address }}
+          </option>
+        </select>
         <div class="modal-buttons">
           <button @click="addManager" class="modal-btn">Добавить</button>
           <button @click="closeManagerModal" class="modal-btn">Отмена</button>
@@ -63,8 +77,20 @@
       <div class="modal-content">
         <h2>Добавить курьера</h2>
         <input v-model="newCourier.name" placeholder="ФИО" class="input-field" />
-<input v-model="newCourier.email" placeholder="Email" class="input-field" />
-        <input v-model="newCourier.password" type="password" placeholder="Пароль" class="input-field" />
+        <input
+          v-model="newCourier.email"
+          placeholder="Email"
+          class="input-field"
+          pattern="^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$"
+        />
+        <input
+          v-model="newCourier.password"
+          type="password"
+          placeholder="Пароль"
+          minlength="3"
+          maxlength="15"
+          class="input-field"
+        />
         <!-- Добавьте другие поля по необходимости -->
         <div class="modal-buttons">
           <button @click="addCourier" class="modal-btn">Добавить</button>
@@ -74,9 +100,9 @@
     </div>
   </div>
 </template>
-  
+
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   data() {
@@ -85,104 +111,111 @@ export default {
       couriers: [],
       newManager: {
         name: '',
-email: '',
+        email: '',
         password: '',
         restaurant: '',
-restaurants: [],
+        restaurants: []
       },
       newCourier: {
         name: '',
-email: '',
-        password: '',
+        email: '',
+        password: ''
         // Добавьте другие поля по необходимости
       },
       isManagerModalOpen: false,
       isCourierModalOpen: false,
-restaurantAddresses: [],
-    };
+      restaurantAddresses: []
+    }
   },
   methods: {
-async fetchManagersAndCouriers() {
+    async fetchManagersAndCouriers() {
       try {
         const response = await axios.get('http://185.128.106.222:3000/auth/staff', {
           headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
           }
-        });
+        })
 
-        this.managers = [];
-        this.couriers = [];
+        this.managers = []
+        this.couriers = []
 
         response.data.forEach((staffMember) => {
           if (staffMember.role === 1) {
-            this.managers.push(staffMember);
+            this.managers.push(staffMember)
           } else if (staffMember.role === 2) {
-            this.couriers.push(staffMember);
+            this.couriers.push(staffMember)
           }
-        });
+        })
 
         const restaurantResponse = await axios.get('http://185.128.106.222:3000/restaurant/', {
           headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
-          },
-        });
-        this.restaurants = restaurantResponse.data;
-        this.restaurantAddresses = restaurantResponse.data.map(restaurant => restaurant.address);
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+          }
+        })
+        this.restaurants = restaurantResponse.data
+        this.restaurantAddresses = restaurantResponse.data.map((restaurant) => restaurant.address)
       } catch (error) {
-        console.error('Ошибка при получении менеджеров и курьеров:', error);
+        console.error('Ошибка при получении менеджеров и курьеров:', error)
       }
     },
     deleteManager(index) {
-const managerId = this.managers[index].id;
-      this.deleteStaffMember(managerId);
-      this.managers.splice(index, 1);
+      const managerId = this.managers[index].id
+      this.deleteStaffMember(managerId)
+      this.managers.splice(index, 1)
     },
     deleteCourier(index) {
-const courierId = this.couriers[index].id;
-      this.deleteStaffMember(courierId);
-      this.couriers.splice(index, 1);
+      const courierId = this.couriers[index].id
+      this.deleteStaffMember(courierId)
+      this.couriers.splice(index, 1)
     },
-async deleteStaffMember(staffId) {
+    async deleteStaffMember(staffId) {
       try {
         await axios.delete(`http://185.128.106.222:3000/auth/staff/${staffId}`, {
           headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
           }
-        });
-        console.log(`Сотрудник с ID ${staffId} успешно удален.`);
+        })
+        console.log(`Сотрудник с ID ${staffId} успешно удален.`)
       } catch (error) {
-        console.error(`Ошибка при удалении сотрудника с ID ${staffId}:`, error);
+        console.error(`Ошибка при удалении сотрудника с ID ${staffId}:`, error)
       }
     },
     addManager() {
-      const selectedRestaurant = this.restaurants.find(restaurant => restaurant.id === this.newManager.restaurantId);
+      const selectedRestaurant = this.restaurants.find(
+        (restaurant) => restaurant.id === this.newManager.restaurantId
+      )
       const data = {
         email: this.newManager.email,
         password: this.newManager.password,
         fullName: this.newManager.name,
         role: 1,
         restaurant: {
-          id: selectedRestaurant ? selectedRestaurant.id : null,
+          id: selectedRestaurant ? selectedRestaurant.id : null
         },
-        phone: "+79315363563",
-        address: "г. Бузулук"
-      };
+        phone: '+79315363563',
+        address: 'г. Бузулук'
+      }
 
-      axios.put('http://185.128.106.222:3000/auth/staff', data, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
-        }
-      })
-      .then((response) => {
-        console.log('Менеджер успешно добавлен на сервер:', response.data);
-        this.managers.push(response.data);
-      })
-      .catch((error) => {
-        console.error('Ошибка при добавлении менеджера на сервер:', error);
-      });
+      axios
+        .put('http://185.128.106.222:3000/auth/staff', data, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+          }
+        })
+        .then((response) => {
+          console.log('Менеджер успешно добавлен на сервер:', response.data)
+          this.managers.push(response.data)
+        })
+        .catch((error) => {
+          console.error('Ошибка при добавлении менеджера на сервер:', error)
+        })
 
-      this.closeManagerModal();
+      this.closeManagerModal()
     },
     addCourier() {
       const data = {
@@ -190,46 +223,47 @@ async deleteStaffMember(staffId) {
         password: this.newCourier.password,
         fullName: this.newCourier.name,
         role: 2,
-        phone: "+79315363563",
-        address: "г. Бузулук"
-      };
+        phone: '+79315363563',
+        address: 'г. Бузулук'
+      }
 
-      axios.put('http://185.128.106.222:3000/auth/staff', data, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
-        }
-      })
-      .then((response) => {
-        console.log('Курьер успешно добавлен на сервер:', response.data);
-        this.couriers.push(response.data);
-      })
-      .catch((error) => {
-        console.error('Ошибка при добавлении курьера на сервер:', error);
-      });
+      axios
+        .put('http://185.128.106.222:3000/auth/staff', data, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjowfQ.bQoM-YvgvSYMcASgpMpgI5-JtaZSDu3lzGjH2soiK3s'
+          }
+        })
+        .then((response) => {
+          console.log('Курьер успешно добавлен на сервер:', response.data)
+          this.couriers.push(response.data)
+        })
+        .catch((error) => {
+          console.error('Ошибка при добавлении курьера на сервер:', error)
+        })
 
-      this.closeCourierModal();
+      this.closeCourierModal()
     },
     openManagerModal() {
-      this.isManagerModalOpen = true;
+      this.isManagerModalOpen = true
     },
     closeManagerModal() {
-      this.isManagerModalOpen = false;
+      this.isManagerModalOpen = false
     },
     openCourierModal() {
-      this.isCourierModalOpen = true;
+      this.isCourierModalOpen = true
     },
     closeCourierModal() {
-      this.isCourierModalOpen = false;
-    },
+      this.isCourierModalOpen = false
+    }
   },
   mounted() {
-    this.fetchManagersAndCouriers();
-  },
-};
+    this.fetchManagersAndCouriers()
+  }
+}
 </script>
 
-  
 <style scoped>
 /* Ваши стили здесь */
 

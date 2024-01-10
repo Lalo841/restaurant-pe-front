@@ -1,5 +1,4 @@
 <script setup>
-
 //const emit = defineEmits(['getIdForModal'])
 const props = defineProps({
   id: Number,
@@ -18,7 +17,7 @@ const fullUrl = `http://185.128.106.222:9000/images/${props.imageUrl}`
   <div
     class="bg-orange-100 border border-orange-200 rounded-3xl p-8 cursor-pointer transition hover:-translate-y-2 hover:shadow-2xl"
   >
-    <img class="rounded-xl" :src="fullUrl" alt="ProductPicture" @click="getIdForModal"/>
+    <img class="rounded-xl" :src="fullUrl" alt="ProductPicture" @click="getIdForModal" />
     <p class="mt-2">{{ name }}</p>
 
     <div class="flex justify-between mt-5">
